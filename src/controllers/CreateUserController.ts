@@ -1,20 +1,22 @@
 import { Request, Response} from 'express';
+import { v4 as uuid} from 'uuid';
 import { CreateUserService } from '../services/CreateUserServer';
 class CreateUserController {
-  handle(request: Request ,response: Response) {
+  async handle(request: Request ,response: Response) {
 
     const createUserService = new CreateUserService();
 
     const name = request.body.name;
     const email = request.body.email;
+    const id = uuid();
 
     if(name.length === 0 || email.length === 0) {
-      return response.status(400).json({mensagem: 'Informe todos os campos'})
+      return response.status(400).json({mensagem: 'Nome obrigatorio'})
     }
 
-    const user = createUserService.execute({name, email});
+    const user = await createUserService.execute({id, name, email});
 
-    return response.status(201).json({ user})
+    return response.status(201).json(user)
   }
 }
 
